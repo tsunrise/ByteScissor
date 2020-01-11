@@ -5,11 +5,14 @@ using namespace std;
 
 #include "fileSplitter.h"
 #include "polyfier.h"
+#include "unpolyfier.h"
 
 void usage(){
     string usage = "Usage: \n"
                    "  split <path> <nCopies> <nRequired> \n"
-                   "  split-n <number> <nCopies> <nRequired>";
+                   "  split-n <number> <nCopies> <nRequired> \n"
+                   "  merge-n <id> <value> ..."
+                   ;
     cout << usage << endl;
 }
 
@@ -45,6 +48,25 @@ if (strcmp(argv[1], "split-n") == 0) {
     return 0;
 }
 
+if (strcmp(argv[1], "merge-n") == 0){
+    if (argc % 2 != 0 || argc == 2) {
+        usage();
+        return 1;
+    }
+
+    vector<uint64_t> xs((argc-2)/2);
+    vector<uint64_t> points((argc-2)/2);
+
+    for (int i = 0; i < (argc - 2) / 2; ++i) {
+        xs[i] = stoull(argv[i * 2 + 2]);
+        points[i] = stoull(argv[i * 2 + 3]);
+    }
+    uint32_t recovered = unpolyfier::merge(points, xs);
+    cout << recovered << endl;
+    return 1;
+
+
+}
 usage();
 return 1;
 
