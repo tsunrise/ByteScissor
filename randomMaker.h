@@ -25,7 +25,7 @@ public:
 
     static bool isPrime(uint64_t n);
 
-    static const uint64_t LARGE_PRIME = 0xfb23fba6560244edL;
+    static const uint64_t LARGE_PRIME = 7149038383;
 
 private:randomMaker() = default;
 };

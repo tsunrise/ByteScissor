@@ -6,9 +6,17 @@
 #define POLY_SPLIT_UNPOLYFIER_H
 
 
+#include <cstdint>
+#include <vector>
+using namespace std;
 class unpolyfier {
-
+public:
+    static uint32_t merge(vector<uint64_t> points);
 };
 
+// for unit testing only
+uint64_t power(uint64_t x, uint64_t y);
+uint64_t mdiv(uint64_t a, uint64_t b);
+uint64_t mul(uint64_t a, uint64_t b);
 
 #endif //POLY_SPLIT_UNPOLYFIER_H
