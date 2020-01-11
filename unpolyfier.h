@@ -11,7 +11,7 @@
 using namespace std;
 class unpolyfier {
 public:
-    static uint32_t merge(vector<uint64_t> points);
+    static uint32_t merge(vector<uint64_t> points, vector<uint64_t> xs);
 };
 
 // for unit testing only

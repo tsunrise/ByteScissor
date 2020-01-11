@@ -13,17 +13,17 @@ uint64_t add(uint64_t a, uint64_t b);
 uint64_t mul(uint64_t a, uint64_t b);
 uint64_t mdiv(uint64_t a, uint64_t b);
 // points[i] is the value at p(i+1)
-uint32_t unpolyfier::merge(vector<uint64_t> points) {
+uint32_t unpolyfier::merge(vector<uint64_t> points, vector<uint64_t> xs) {
     uint64_t n = points.size();
     uint64_t result = 0;
 
     // y1, y2, ...
     for (uint64_t i = 0; i < n; i++) {
         uint64_t term = points[i];
-        uint64_t xi = i + 1;
+        uint64_t xi = xs[i];
         for (uint64_t j = 0; j < n; j++) {
             if (j != i) {
-                uint64_t xj = j + 1;
+                uint64_t xj = xs[j];
                 term = mul(term, sub(0, xj)); // term = (x - x1)(x - x2)...(x - x_i-1)(x - x_i+1)...)
             }
         }
@@ -114,5 +114,9 @@ uint64_t mul(uint64_t a, uint64_t b) {
 };
 
 uint64_t mdiv(uint64_t a, uint64_t b) {
+    if (b == 0) {
+        printf("division by zero\n");
+        throw exception();
+    }
     return mul(a, modInverse(b));
 }
