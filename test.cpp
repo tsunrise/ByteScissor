@@ -8,7 +8,6 @@
 #include <iostream>
 #include <random>
 #include <algorithm>
-#include <assert.h>
 
 using namespace std;
 int main(int argc, char** argv) {
