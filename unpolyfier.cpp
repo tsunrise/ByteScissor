@@ -30,7 +30,7 @@ uint32_t unpolyfier::merge(vector<uint64_t> points, vector<uint64_t> xs) {
         uint64_t divider = 1;
         for (uint64_t j = 0; j < n; j++) {
             if (j != i) {
-                uint64_t xj = j + 1;
+                uint64_t xj = xs[j];
                 divider = mul(divider, sub(xi, xj)); // term = (xi - x1)(xi - x2)...(xi - x_i-1)(xi - x_i+1)...)
             }
         }
