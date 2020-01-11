@@ -1,6 +1,6 @@
 # File Splitter
 
-This program implements the classic secret sharing scheme. It splits the secret file into `n` copies. The file can be recovered if and only if any $$k$$ of the copies are merged. The parameter `n` and `k` can be specified. 
+This program implements the classic secret sharing scheme. It splits the secret file into `n` copies. The file can be recovered if and only if any `k` of the copies are merged. The parameter `n` and `k` can be specified. 
 
 ## Get Started
 
