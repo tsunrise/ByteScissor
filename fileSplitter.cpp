@@ -130,4 +130,6 @@ void fileSplitter::run() {
         this->outputs[i]->write(reinterpret_cast<const char *>(&totalBytesRead), sizeof(uint64_t));
     }
 
+    delete [] msg;
+
 }
