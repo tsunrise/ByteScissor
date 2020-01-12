@@ -8,6 +8,17 @@
 
 #define CHUNK_SIZE 16777216
 
+/**
+ * File spec:
+ * - uint8_t: the id of the fragment
+ * - uint64_t: the size of the file
+ * - repeat:
+ *      - uint32_t: bit header: header & (1 << i) != 0 if 32th bit of content[i] is 1
+ *      - uint32_t[32]: content
+ * @param path
+ * @param nCopies
+ * @param nRequired
+ */
 fileSplitter::fileSplitter(string path, uint8_t nCopies, uint8_t nRequired) {
     if (nCopies < nRequired) {
         cout << "Error: Number of generated blocks must be greater of equal to number of required blocks. ";
