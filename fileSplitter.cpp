@@ -74,7 +74,7 @@ void fileSplitter::run() {
         totalBytesRead += lastRead;
         if (this->input.eof()) {
             // last bit alignment
-            msg[nRead - 1] = msg[nRead - 1] & (((1u << (lastRead % sizeof(uint32_t)) * 8)) - 1);
+//            msg[nRead - 1] = msg[nRead - 1] & (((1u << (lastRead % sizeof(uint32_t)) * 8)) - 1);  //todo: bug in this code
         }
 
         // decode and write
