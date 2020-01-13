@@ -9,7 +9,7 @@ using namespace std;
 #include "fileMerger.h"
 
 void usage(){
-    string usage = "Byte Scissor v0.1\n"
+    string usage = "Byte Scissor v0.2\n"
                    "Usage: \n"
                    "  split <path> <number of fragments> <number of required fragments to merge> \n"
                    "  split-n <number> <number of fragments> <number of required fragments to merge> \n"
