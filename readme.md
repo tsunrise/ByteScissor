@@ -1,50 +1,84 @@
-# File Splitter
+# Byte Scissor
 
-This program implements the classic secret sharing scheme. It splits the secret file into `n` copies. The file can be recovered if and only if any `k` of the copies are merged. The parameter `n` and `k` can be specified. 
+Byte scissor is tool to split a secret file into fragments.  The file can be recovered if and only if any required amount of fragments are merged. The parameter `n` (number of fragments) and `k` (fragments required to merge) can be specified. 
 
 ## Get Started
 
 ### Split a file into several copies
 
 ```bash
-$ splitter split <path> <nCopies> <nRequired>
+$ byteScissor split <path> <number of fragments> <number of required fragments to merge>
 ```
 
 `path`: The path (either relative or absolute) of the file.
 
-`nCopies`: Parameter `n`. The secret file will be split to n copies. 
+`number of fragments`: Parameter `n`. The secret file will be split to n copies. 
 
-`nRequired`: Parameter `k`. The secret file can only be recovered if k of copies are merged. 
+`number of required fragments to merge`: Parameter `k`. The secret file can only be recovered if k of copies are merged. 
 
 
 
 ### Split a number into several numbers
 
 ```bash
-$ splitter program split-n <number> <nCopies> <nRequired>
+$ byteScissor split-n <number> <number of fragments> <number of required fragments to merge>
 ```
 
 `number`: The number to be split. 
 
-`nCopies` and `nRequired` are the same as above. 
+`number of fragments` and `number of required fragments to merge` are the same as above. 
 
 
 
 ### Recover a file
 
-🚧 Under development. Coming soon. 
+```bash
+$ byteScissor merge --output <output path> --input <input paths>...
+```
+
+One can specify the path of the merged file and a list of input paths. `--output` can be replaced with `-o` and `--input` can be replaced with `-i`. 
 
 
 
 ### Recover a number
 
 ```bash
-$ splitter merge-n <id> <value> ...
+$ byteScissor merge-n <id> <value> ...
 ```
 
 `id`: The position of the value. For example, if `split-n` returns `189 172 193`, the id of `189` is 1; the id of `172` is 2. 
 
 `value`: The values to be merged. 
+
+
+
+### Example: Split an Image
+
+Suppose we want to split an image `image.png` into 7 fragments. Combining any 4 fragments can recover this image. 
+
+To split the image, use the following commend: 
+
+```bash
+$ byteScissor split ./image.png 7 4
+```
+
+The following fragments will be generated: 
+
+```
+image.png.1.part
+image.png.2.part
+image.png.3.part
+image.png.4.part
+image.png.5.part
+image.png.6.part
+image.png.7.part
+```
+
+Suppose one has the first, fourth, fifth, and sixth fragments. To merge the file into `merged.png`, use the following commend:
+
+```bash
+$ byteScissor merge -o merged.png -i ./image.png.1.part ./image.png.4.part ./image.png.5.part ./image.png.6.part
+```
 
 
 
