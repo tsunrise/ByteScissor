@@ -84,5 +84,5 @@ $ byteScissor merge -o merged.png -i ./image.png.1.part ./image.png.4.part ./ima
 
 ## Contribute
 
-Because this is my first C++ project, I believe there should be a ton of things to be fixed. Feel free to contact me, create an issue, or make a merge request. 
+There should be a ton of things to be fixed. Feel free to create an issue or make a merge request. 
 
