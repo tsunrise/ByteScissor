@@ -4,7 +4,7 @@ Byte scissor is tool to split a secret file into fragments.  The file can be rec
 
 ## Get Started
 
-### Split a file into several copies
+### Split a file into several fragments
 
 ```bash
 $ byteScissor split <path> <number of fragments> <number of required fragments to merge>
