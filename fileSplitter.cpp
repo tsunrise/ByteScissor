@@ -79,15 +79,32 @@ void fileSplitter::run() {
 
         // decode and write
         // write one group: one uint32_t indicating first bit, and 32 uint32_t indicating the remaining bit
-        uint32_t most_significant_bits[nRead / 32 + 1][this->nCopies]; // little endian
-        uint32_t input_buffer [nRead / 32 + 1][this->nCopies][32];
-        uint32_t nWritten [nRead / 32 + 1];
+//        uint32_t most_significant_bits[nRead / 32 + 1][this->nCopies]; // little endian
+//        uint32_t input_buffer [nRead / 32 + 1][this->nCopies][32];
+//        uint32_t nWritten [nRead / 32 + 1];
+
+        uint32_t rSize = nRead / 32 + 1;  // 33 group
+        auto** most_significant_bits = new uint32_t*[rSize];
+        for (uint32_t i = 0; i < rSize; i++) {
+            most_significant_bits[i] = new uint32_t[this->nCopies];
+        }
+
+        auto*** input_buffer = new uint32_t**[rSize];
+        for (uint32_t i = 0; i < rSize; i++) {
+            input_buffer[i] = new uint32_t*[this->nCopies];
+            for (uint32_t j = 0; j < this->nCopies; j++) {
+                input_buffer[i][j] = new uint32_t[32];
+            }
+        }
+
+        auto* nWritten = new uint32_t[rSize];
+
 #pragma omp parallel for default(none) shared(nRead, most_significant_bits, nWritten, msg, input_buffer, cout, totalBytesRead)
         for (uint32_t p = 0; p < nRead; p += 32) {
             // omp hint
             if (p == 0) {
                 cout << "Performing splitting on " + to_string(omp_get_num_threads()) + " threads. ";
-                cout << to_string((double) totalBytesRead / 1048576) + " MB are read.";
+                cout << to_string((double) totalBytesRead / 1048576) + " MB are read." <<endl;
             }
 
             // most_significant_bits
@@ -117,12 +134,29 @@ void fileSplitter::run() {
             }
         }
 
+        // clear allocated memory
+        for (uint32_t i = 0; i < rSize; i++) {
+            delete [] most_significant_bits[i];
+        }
+        delete [] most_significant_bits;
+
+        for (uint32_t i = 0; i < rSize; i++) {
+            for (uint32_t j = 0; j < this->nCopies; j++) {
+                delete [] input_buffer[i][j];
+            }
+            delete [] input_buffer[i];
+        }
+        delete [] input_buffer;
+
+        delete [] nWritten;
+
         }
     for (uint32_t i = 0; i < nCopies; i++) {
         this->outputs[i]->seekp(1);
         this->outputs[i]->write(reinterpret_cast<const char *>(&totalBytesRead), sizeof(uint64_t));
     }
 
+    // memory clear
     delete [] msg;
     }
 //    while (!this->input.eof()) {
