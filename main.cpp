@@ -6,15 +6,20 @@ using namespace std;
 #include "fileSplitter.h"
 #include "polyfier.h"
 #include "unpolyfier.h"
+#include "fileMerger.h"
 
 void usage(){
-    string usage = "Usage: \n"
-                   "  split <path> <nCopies> <nRequired> \n"
-                   "  split-n <number> <nCopies> <nRequired> \n"
-                   "  merge-n <id> <value> ..."
+    string usage = "Byte Scissor v0.1\n"
+                    "Usage: \n"
+                   "  split <path> <number of fragments> <number of required fragments to merge> \n"
+                   "  split-n <number> <number of fragments> <number of required fragments to merge> \n"
+                   "  merge --output <output path> --input <input paths>...\n"
+                   "  merge-n <id> <values>... \n"
                    ;
     cout << usage << endl;
 }
+
+int parseMerge(int argc, char** argv);
 
 int main(int argc, char** argv) {
 
@@ -64,11 +69,53 @@ if (strcmp(argv[1], "merge-n") == 0){
     uint32_t recovered = unpolyfier::merge(points, xs);
     cout << recovered << endl;
     return 1;
+}
 
+if (strcmp(argv[1], "merge") == 0) {
+    int ret = parseMerge(argc, argv);
+    if (ret != 0) {
+        usage();
+    }
+    return ret;
+}
 
+if (strcmp(argv[1], "debug") == 0){
+    mergeFiles({"./infoS.txt.1.part", "./infoS.txt.3.part", "./infoS.txt.4.part"}, "output.txt");
+    return 0;
 }
 usage();
 return 1;
+
+}
+
+int parseMerge(int argc,char** argv) {
+    if (argc < 6) {
+        return 1;
+    }
+
+    if ((strcmp(argv[2], "--output") != 0) && (strcmp(argv[2], "-o") != 0) ) {
+        return 1;
+    }
+
+    string outPath(argv[3]);
+
+    if ((strcmp(argv[4], "--input") != 0) && (strcmp(argv[4], "-i") != 0) ) {
+        return 1;
+    }
+
+    vector<string> inPaths(argc - 5);
+    for (int i = 5; i < argc; i++) {
+        inPaths[i - 5] = argv[i];
+    }
+
+    try{
+    mergeFiles(inPaths, outPath);
+    } catch (exception &a) {
+        cout << "Unable to merge files (exception thrown): " << a.what() << endl;
+        return 1;
+    }
+
+    return 0;
 
 }
 
