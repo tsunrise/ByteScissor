@@ -4,7 +4,7 @@ Byte scissor is tool to split a secret file into fragments.  The file can be rec
 
 ## Get Started
 
-### Split a file into several copies
+### Split a file into multiple fragments
 
 ```bash
 $ byteScissor split <path> <number of fragments> <number of required fragments to merge>
@@ -18,7 +18,7 @@ $ byteScissor split <path> <number of fragments> <number of required fragments t
 
 
 
-### Split a number into several numbers
+### Split a number into multiple numbers
 
 ```bash
 $ byteScissor split-n <number> <number of fragments> <number of required fragments to merge>
@@ -56,7 +56,7 @@ $ byteScissor merge-n <id> <value> ...
 
 Suppose we want to split an image `image.png` into 7 fragments. Combining any 4 fragments can recover this image. 
 
-To split the image, use the following commend: 
+To split the image, use the following command: 
 
 ```bash
 $ byteScissor split ./image.png 7 4
@@ -74,7 +74,7 @@ image.png.6.part
 image.png.7.part
 ```
 
-Suppose one has the first, fourth, fifth, and sixth fragments. To merge the file into `merged.png`, use the following commend:
+Suppose one has the first, fourth, fifth, and sixth fragments. To merge the file into `merged.png`, use the following command:
 
 ```bash
 $ byteScissor merge -o merged.png -i ./image.png.1.part ./image.png.4.part ./image.png.5.part ./image.png.6.part
@@ -84,5 +84,5 @@ $ byteScissor merge -o merged.png -i ./image.png.1.part ./image.png.4.part ./ima
 
 ## Contribute
 
-There should be a ton of things to be fixed. Feel free to create an issue or make a merge request. 
+Feel free to create an issue or make a merge request. 
 
