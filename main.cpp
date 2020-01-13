@@ -10,7 +10,7 @@ using namespace std;
 
 void usage(){
     string usage = "Byte Scissor v0.1\n"
-                    "Usage: \n"
+                   "Usage: \n"
                    "  split <path> <number of fragments> <number of required fragments to merge> \n"
                    "  split-n <number> <number of fragments> <number of required fragments to merge> \n"
                    "  merge --output <output path> --input <input paths>...\n"
