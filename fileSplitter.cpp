@@ -5,6 +5,7 @@
 #include <iostream>
 #include "fileSplitter.h"
 #include "polyfier.h"
+#include <omp.h>
 
 #define CHUNK_SIZE 16777216
 
@@ -81,8 +82,14 @@ void fileSplitter::run() {
         uint32_t most_significant_bits[nRead / 32 + 1][this->nCopies]; // little endian
         uint32_t input_buffer [nRead / 32 + 1][this->nCopies][32];
         uint32_t nWritten [nRead / 32 + 1];
-#pragma omp parallel for default(none) shared(nRead, most_significant_bits, nWritten, msg, input_buffer)
+#pragma omp parallel for default(none) shared(nRead, most_significant_bits, nWritten, msg, input_buffer, cout, totalBytesRead)
         for (uint32_t p = 0; p < nRead; p += 32) {
+            // omp hint
+            if (p == 0) {
+                cout << "Performing splitting on " + to_string(omp_get_num_threads()) + " threads. ";
+                cout << to_string((double) totalBytesRead / 1048576) + " MB are read.";
+            }
+
             // most_significant_bits
             uint32_t r = p / 32;
             for (uint32_t i = 0; i < this->nCopies; i++) {
