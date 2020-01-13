@@ -78,35 +78,45 @@ void fileSplitter::run() {
 
         // decode and write
         // write one group: one uint32_t indicating first bit, and 32 uint32_t indicating the remaining bit
+        uint32_t most_significant_bits[nRead / 32 + 1][this->nCopies]; // little endian
+        uint32_t input_buffer [nRead / 32 + 1][this->nCopies][32];
+        uint32_t nWritten [nRead / 32 + 1];
+#pragma omp parallel for default(none) shared(nRead, most_significant_bits, nWritten, msg, input_buffer)
         for (uint32_t p = 0; p < nRead; p += 32) {
             // most_significant_bits
-            uint32_t most_significant_bits[this->nCopies]; // little endian
-
-            // input_buffer
-            uint32_t input_buffer [this->nCopies][32];
+            uint32_t r = p / 32;
             for (uint32_t i = 0; i < this->nCopies; i++) {
-                most_significant_bits[i] = 0;
+                most_significant_bits[r][i] = 0;
             }
             polyfier pf(this->nCopies, this->nRequired);
-            uint32_t nWritten = 0;
+            nWritten[r] = 0;
             for (uint32_t i = p; i < p + 32 && i < nRead; i++) {
                 pf.set_msg(msg[i]);
                 uint64_t* buffer = pf.getBuffer();
                 for (uint32_t j = 0; j < this->nCopies; j++) {
-                    most_significant_bits[j] = most_significant_bits[j] |
+                    most_significant_bits[r][j] = most_significant_bits[r][j] |
                             ((1u << (i - p)) & ((buffer[j] & 0x100000000u) ? 0xffffffffffffffff : 0)); // set ith bit of first bits
-                    input_buffer[j][i-p] = buffer[j];
+                    input_buffer[r][j][i-p] = buffer[j];
                 }
-                nWritten += 1;
+                nWritten[r] += 1;
             }
-
-            // write to file
+        }
+        // write to file
+        for (uint32_t p = 0; p < nRead; p += 32) {
+            uint32_t r = p/32;
             for (uint32_t j = 0; j < this->nCopies; j++) {
-                this->outputs[j]->write(reinterpret_cast<const char *>(most_significant_bits + j), sizeof(uint32_t));
-                this->outputs[j]->write(reinterpret_cast<const char *>(input_buffer[j]), sizeof(uint32_t) * nWritten);
+                this->outputs[j]->write(reinterpret_cast<const char *>(most_significant_bits[r] + j), sizeof(uint32_t));
+                this->outputs[j]->write(reinterpret_cast<const char *>(input_buffer[r][j]), sizeof(uint32_t) * nWritten[r]);
             }
+        }
 
         }
+    for (uint32_t i = 0; i < nCopies; i++) {
+        this->outputs[i]->seekp(1);
+        this->outputs[i]->write(reinterpret_cast<const char *>(&totalBytesRead), sizeof(uint64_t));
+    }
+
+    delete [] msg;
     }
 //    while (!this->input.eof()) {
 //        uint32_t msg;
@@ -125,11 +135,3 @@ void fileSplitter::run() {
 //        }
 //    }
 
-    for (uint32_t i = 0; i < nCopies; i++) {
-        this->outputs[i]->seekp(1);
-        this->outputs[i]->write(reinterpret_cast<const char *>(&totalBytesRead), sizeof(uint64_t));
-    }
-
-    delete [] msg;
-
-}
