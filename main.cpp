@@ -15,6 +15,8 @@ void usage(){
                    "  split-n <number> <number of fragments> <number of required fragments to merge> \n"
                    "  merge --output <output path> --input <input paths>...\n"
                    "  merge-n <id> <values>... \n"
+
+                   "Need more help? https://github.com/tsunrise/ByteScissor"
                    ;
     cout << usage << endl;
 }
