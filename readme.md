@@ -24,7 +24,7 @@ $ byteScissor split <path> <number of fragments> <number of required fragments t
 $ byteScissor split-n <number> <number of fragments> <number of required fragments to merge>
 ```
 
-`number`: The number to be split. 
+`number`: The number to be split. The number should be in range \[0, 4294967295\]
 
 `number of fragments` and `number of required fragments to merge` are the same as above. 
 
