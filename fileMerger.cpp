@@ -56,6 +56,7 @@ void mergeFiles(vector<string> paths, string outputFilePath) {
     // read and write
     vector<vector<uint64_t>> buffer(32, vector<uint64_t>(nCopies));
     uint64_t totalBytesWritten = 0;
+    uint32_t cycleCounter = 0;
     while (!inputs[0].eof()) {
         uint32_t contentBytesRead;
         for (uint32_t j = 0; j < nCopies; ++j) {
@@ -80,10 +81,20 @@ void mergeFiles(vector<string> paths, string outputFilePath) {
 
         uint32_t plain_buffer[32];
         uint32_t nWritten = 0;
+
+        // show the progress
+        if (cycleCounter % 50000 == 0 && size > 32 * 4 * 50000) {
+            cout << "Merging File: " + to_string((double) totalBytesWritten / size * 100) + "% complete. " << endl;
+        }
+
+        // parallelize merging process (32 uint64_t)
+#pragma omp parallel for default(none) shared(contentBytesRead, plain_buffer, buffer, id_vector) reduction(+: nWritten)
         for (uint32_t i = 0; i < contentBytesRead / sizeof(uint32_t); ++i) {
             plain_buffer[i] = unpolyfier::merge(buffer[i],id_vector);
             nWritten += 1;
         }
+
+        // check tail case
         if (totalBytesWritten + 32 * sizeof(uint32_t) > size) {
             output.write(reinterpret_cast<const char *>(plain_buffer), size - totalBytesWritten);
         } else{
@@ -91,5 +102,9 @@ void mergeFiles(vector<string> paths, string outputFilePath) {
             totalBytesWritten += nWritten * sizeof(uint32_t);
         }
 
+        // count the cycle (to track the progress)
+        cycleCounter += 1;
     }
+
+    cout << "Complete! Merged File saved to " + outputFilePath << endl;
 }
